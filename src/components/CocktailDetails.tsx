@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Drink } from "../types/CocktailAPI.types";
+import { Drink } from "../shared/@types/CocktailAPI.types";
+import { getDrink } from "../shared/api/services/getDrink";
 
 
 const CocktailDetails = () => {
-	const [drink, setDrink] = useState<Drink | null>(null);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const rawCocktail = await fetch('https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=12460');
-      const json = await rawCocktail.json();
+	const { drink } = getDrink('11001')
 
-			let newJson = json.drinks[0];
-			setDrink(newJson);
-		}
-		fetchData();
-	}, [])
 	console.log(drink);	
  
 	let ingredients: string[] = [];
@@ -35,10 +27,16 @@ const CocktailDetails = () => {
 			<h2>Ingredients</h2>
 			<ul>
 				{/* De momento está el key hardcodeado */}
-				{ingredients.map((element) => <li key={element}>{element}</li>)}
+				{ingredients.map((ingredient) => 
+					<div>
+						<li key={ingredient}>{ingredient}</li>
+						<img src={`https://www.thecocktaildb.com/images/ingredients/${ingredient.toLocaleLowerCase()}-Small.png`} alt="" />
+					</div>
+				)}
 			</ul>
 
 			<h2>Instructions</h2>
+			<p>{drink?.strInstructions}</p>
 		</>
 	)
 }
